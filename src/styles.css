@@ -145,3 +145,13 @@ body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;backgrou
   cursor:pointer; box-shadow: 0 8px 20px rgba(17,24,39,.06);
 }
 .cityTile:hover{background:#f9fafb}
+.card__img{height:150px;background:#f3f4f6;display:flex;align-items:center;justify-content:center}
+.card__img img{max-height:100%;max-width:100%;object-fit:contain}
+.card__body{padding:12px}
+.card__title{font-weight:700;line-height:1.2;min-height:40px}
+.card__priceRow{display:flex;gap:8px;align-items:baseline;margin-top:8px;flex-wrap:wrap}
+.priceNew{font-weight:800;font-size:18px}
+.priceOld{color:#6b7280;text-decoration:line-through;font-size:13px}
+.badge{background:rgba(220,38,38,.12);color:#b91c1c;font-weight:800;font-size:12px;padding:4px 8px;border-radius:999px}
+.imgph{font-size:32px;color:#9ca3af}
+
