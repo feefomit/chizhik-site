@@ -1,0 +1,8 @@
+{
+  "name": "chizhik-site",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "rm -rf dist && mkdir -p dist && cp -r src/* dist/"
+  }
+}
