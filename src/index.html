@@ -3,11 +3,98 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Ценопад</title>
+  <title>Ценопад — скидки и акции</title>
   <link rel="stylesheet" href="./styles.css"/>
 </head>
 <body>
-  <div id="app">Загрузка…</div>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header__row">
+      <div class="brand">
+        <div class="brand__logo">Ц</div>
+        <div class="brand__text">
+          <div class="brand__name">Ценопад</div>
+          <div class="brand__sub">Скидки и акции</div>
+        </div>
+      </div>
+
+      <button class="cityBtn" id="cityBtn" type="button" title="Выбрать город">
+        <span class="cityBtn__pin">📍</span>
+        <span id="cityName">Выберите город</span>
+        <span class="cityBtn__chev">▾</span>
+      </button>
+
+      <div class="search">
+        <input id="q" placeholder="Поиск товаров…" autocomplete="off"/>
+        <button id="searchBtn" type="button">Найти</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- City modal -->
+  <div class="modal" id="cityModal" hidden>
+    <div class="modal__backdrop" id="cityClose"></div>
+    <div class="modal__card">
+      <div class="modal__title">Выбор города</div>
+
+      <div class="modal__row">
+        <input id="cityQuery" placeholder="Начни вводить: моск, санкт…" autocomplete="off"/>
+        <button id="citySearchBtn" type="button">Искать</button>
+      </div>
+
+      <div class="chips" id="popularCities"></div>
+
+      <div class="list" id="cityList"></div>
+      <div class="muted modal__hint">Подсказка: выбирай город с <b>has_shop=true</b>.</div>
+    </div>
+  </div>
+
+  <main class="container">
+    <!-- Promo banner -->
+    <section class="section">
+      <div id="offersBox"></div>
+    </section>
+
+    <!-- Categories -->
+    <section class="section">
+      <div class="section__head">
+        <h2>Категории</h2>
+        <div class="muted" id="catHint">Загружаю…</div>
+      </div>
+      <div class="cats" id="cats"></div>
+    </section>
+
+    <!-- Deals -->
+    <section class="section">
+      <div class="section__head">
+        <h2>Товары со скидками</h2>
+        <div class="muted" id="prodHint"></div>
+      </div>
+
+      <div class="products" id="products"></div>
+
+      <div class="moreRow">
+        <button class="moreBtn" id="moreBtn" hidden type="button">Показать ещё</button>
+      </div>
+    </section>
+
+    <!-- Cities -->
+    <section class="section">
+      <div class="section__head">
+        <h2>Города</h2>
+        <div class="muted">Быстрый выбор — нажми на город</div>
+      </div>
+      <div class="citiesGrid" id="citiesGrid"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__row">
+      <div class="muted">Неофициальный сервис. Данные загружаются из магазина “Чижик”.</div>
+      <div class="muted">© <span id="year"></span></div>
+    </div>
+  </footer>
+
   <script src="./app.js"></script>
 </body>
 </html>
