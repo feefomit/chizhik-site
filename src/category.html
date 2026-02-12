@@ -14,7 +14,7 @@
       <button id="backBtn" style="border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:800;transition:background 0.2s;">
         ← Назад
       </button>
-      <h1 id="catName" style="font-size:18px;font-weight:900;margin:0;flex:1;text-align:center;">Категория</h1>
+      <div style="font-size:18px;font-weight:900;">🛒 Чижик</div>
       <button id="cityBtn" style="border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:800;transition:background 0.2s;">
         <span id="cityName">Город</span>
       </button>
@@ -22,6 +22,13 @@
   </header>
 
   <main style="max-width:1200px;margin:20px auto;padding:0 20px;">
+    <!-- Хлебные крошки -->
+    <div id="breadcrumbs" style="margin-bottom:24px;font-size:14px;display:flex;align-items:center;flex-wrap:wrap;">
+      <a href="index.html" style="color:#6b7280;text-decoration:none;transition:color 0.2s;" onmouseenter="this.style.color='#111827'" onmouseleave="this.style.color='#6b7280'">Главная</a>
+      <span style="color:#d1d5db;margin:0 8px;">/</span>
+      <span id="catName" style="color:#111827;font-weight:700;">Категория</span>
+    </div>
+
     <!-- Подкатегории -->
     <section id="subcats" style="margin-bottom:32px;display:none;">
       <h2 style="font-size:18px;font-weight:900;margin:0 0 12px 0;">Подкатегории</h2>
