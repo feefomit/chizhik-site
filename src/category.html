@@ -6,7 +6,8 @@
   <meta name="api-base" content="https://feefomit-chizhick-deb9.twc1.net">
   <meta name="api-prefix" content="/public">
   <title>Категория - Чижик</title>
-  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="Каталог товаров категории с доставкой">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <header style="background:#fff;border-bottom:1px solid #e5e7eb;padding:14px 20px;">
@@ -14,7 +15,7 @@
       <button id="backBtn" style="border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:800;transition:background 0.2s;">
         ← Назад
       </button>
-      <div style="font-size:18px;font-weight:900;">🛒 Чижик</div>
+      <a href="/" style="text-decoration:none;color:inherit;font-size:18px;font-weight:900;">🛒 Чижик</a>
       <button id="cityBtn" style="border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:800;transition:background 0.2s;">
         <span id="cityName">Город</span>
       </button>
@@ -22,20 +23,17 @@
   </header>
 
   <main style="max-width:1200px;margin:20px auto;padding:0 20px;">
-    <!-- Хлебные крошки -->
     <div id="breadcrumbs" style="margin-bottom:24px;font-size:14px;display:flex;align-items:center;flex-wrap:wrap;">
-      <a href="index.html" style="color:#6b7280;text-decoration:none;transition:color 0.2s;" onmouseenter="this.style.color='#111827'" onmouseleave="this.style.color='#6b7280'">Главная</a>
+      <a href="/" style="color:#6b7280;text-decoration:none;">Главная</a>
       <span style="color:#d1d5db;margin:0 8px;">/</span>
       <span id="catName" style="color:#111827;font-weight:700;">Категория</span>
     </div>
 
-    <!-- Подкатегории -->
     <section id="subcats" style="margin-bottom:32px;display:none;">
       <h2 style="font-size:18px;font-weight:900;margin:0 0 12px 0;">Подкатегории</h2>
       <div id="subcatsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;"></div>
     </section>
 
-    <!-- Товары категории -->
     <section style="margin-bottom:48px;">
       <h2 style="font-size:18px;font-weight:900;margin:0 0 12px 0;">Товары</h2>
       <div id="prodHint" style="margin-bottom:12px;color:#6b7280;font-size:14px;">Загрузка...</div>
@@ -48,7 +46,6 @@
       </div>
     </section>
 
-    <!-- Акционные товары -->
     <section id="promoSection" style="display:none;margin-bottom:32px;">
       <h2 style="font-size:22px;font-weight:900;margin:0 0 12px 0;">🔥 Акции и скидки</h2>
       <div id="promoProducts" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;"></div>
@@ -59,7 +56,7 @@
     <div>© 2026 Чижик - Каталог товаров</div>
   </footer>
 
-  <script src="js/app.js"></script>
-  <script src="js/category.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/category.js"></script>
 </body>
 </html>
