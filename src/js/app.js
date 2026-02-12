@@ -1,14 +1,8 @@
-/*  chizhick.ru — app.js (vanilla) - ГЛАВНАЯ СТРАНИЦА + API */
+/*  chizhick.ru — app.js - ГЛАВНАЯ + API */
 
-// =============================
-// ЭКСПОРТ API (сразу, до всего)
-// =============================
 window.ChizhikAPI = window.ChizhikAPI || {};
 
 (() => {
-  // =========================
-  // CONFIG
-  // =========================
   const API_BASE =
     window.__API_BASE__ ||
     document.querySelector('meta[name="api-base"]')?.content ||
@@ -22,17 +16,14 @@ window.ChizhikAPI = window.ChizhikAPI || {};
   const DEFAULT_CITY = {
     id: "0c5b2444-70a0-4932-980c-b4dc0d3f02b5",
     name: "Москва",
+    slug: "moscow"
   };
 
   const TREE_CACHE_TTL_MS = 12 * 60 * 60 * 1000;
   const OFFERS_CACHE_TTL_MS = 10 * 60 * 1000;
   const API_RETRIES = 20;
 
-  // =========================
-  // HELPERS
-  // =========================
   const $ = (id) => document.getElementById(id);
-
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
   const escapeHtml = (s) =>
@@ -52,6 +43,25 @@ window.ChizhikAPI = window.ChizhikAPI || {};
       typeof v === "string" &&
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v)
     );
+  }
+
+  function slugify(text) {
+    const ru = {
+      'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e',
+      'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
+      'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+      'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch',
+      'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+    };
+    
+    return String(text || "")
+      .toLowerCase()
+      .split('')
+      .map(char => ru[char] || char)
+      .join('')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .substring(0, 100);
   }
 
   function setText(id, text) {
@@ -104,9 +114,6 @@ window.ChizhikAPI = window.ChizhikAPI || {};
     return (items || []).filter((p) => p.old_price != null && Number(p.old_price) > Number(p.price));
   }
 
-  // =========================
-  // LOCAL STORAGE CACHE
-  // =========================
   const storage = {
     getCity() {
       try {
@@ -123,7 +130,6 @@ window.ChizhikAPI = window.ChizhikAPI || {};
     clearCity() {
       localStorage.removeItem("city");
     },
-
     _getCache(key) {
       try {
         const raw = localStorage.getItem(key);
@@ -154,9 +160,6 @@ window.ChizhikAPI = window.ChizhikAPI || {};
     },
   };
 
-  // =========================
-  // API
-  // =========================
   async function api(path, { retries = API_RETRIES, timeoutMs = 25000 } = {}) {
     const base = cleanBase(API_BASE);
     const url = `${base}${API_PREFIX}${path}`;
@@ -188,9 +191,6 @@ window.ChizhikAPI = window.ChizhikAPI || {};
     throw lastErr || new Error("API error");
   }
 
-  // ========================================
-  // ЭКСПОРТ API для других страниц (СРАЗУ!)
-  // ========================================
   Object.assign(window.ChizhikAPI, {
     api,
     storage,
@@ -204,13 +204,11 @@ window.ChizhikAPI = window.ChizhikAPI || {};
     discountPct,
     pickCatImage,
     filterDiscounts,
+    slugify,
     API_BASE,
     API_PREFIX,
   });
 
-  // =========================
-  // UI: City modal
-  // =========================
   function ensureCityModal() {
     if ($("cityModal")) return;
 
@@ -228,7 +226,6 @@ window.ChizhikAPI = window.ChizhikAPI || {};
           <button id="cityClose" style="border:0;background:transparent;font-size:22px;line-height:1;cursor:pointer;">×</button>
         </div>
         <div style="padding:14px 16px;">
-          <!-- Быстрые города -->
           <div style="margin-bottom:16px;">
             <div style="font-size:13px;color:#6b7280;margin-bottom:8px;font-weight:600;">Популярные города:</div>
             <div id="citiesQuick" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
@@ -250,7 +247,6 @@ window.ChizhikAPI = window.ChizhikAPI || {};
 
     $("cityClose")?.addEventListener("click", closeCityModal);
 
-    // Быстрые города
     const quick = $("citiesQuick");
     if (quick) {
       const popular = ["Москва", "Санкт-Петербург", "Казань", "Екатеринбург", "Новосибирск", "Нижний Новгород"];
@@ -329,6 +325,7 @@ window.ChizhikAPI = window.ChizhikAPI || {};
     items.slice(0, 20).forEach((c) => {
       const id = c.fias_id;
       const name = c.name;
+      const slug = c.slug || slugify(name);
       const b = document.createElement("button");
       b.type = "button";
       b.style.cssText = `
@@ -338,14 +335,14 @@ window.ChizhikAPI = window.ChizhikAPI || {};
       b.innerHTML = `
         <div>
           <div style="font-weight:800;">${escapeHtml(name)}</div>
-          <div style="font-size:12px;color:#6b7280;">${escapeHtml(c.slug || "")}</div>
+          <div style="font-size:12px;color:#6b7280;">${escapeHtml(slug)}</div>
         </div>
         <div style="font-size:12px;color:#6b7280;">выбрать</div>
       `;
       b.onmouseenter = () => b.style.background = "#f9fafb";
       b.onmouseleave = () => b.style.background = "#fff";
       b.onclick = () => {
-        selectCity({ id, name });
+        selectCity({ id, name, slug });
         closeCityModal();
       };
       box.appendChild(b);
@@ -359,21 +356,17 @@ window.ChizhikAPI = window.ChizhikAPI || {};
     const norm = name.trim().toLowerCase();
     const best =
       items.find((c) => String(c.name || "").trim().toLowerCase() === norm) || items[0];
-    selectCity({ id: best.fias_id, name: best.name });
+    selectCity({ id: best.fias_id, name: best.name, slug: best.slug || slugify(best.name) });
   }
 
-  // Экспортируем для других страниц
   window.ChizhikCity = { 
     openCityModal, 
     selectCity: (city) => {
       storage.setCity(city);
-      location.href = `index.html?city=${city.id}`;
+      location.href = `/${city.slug}/`;
     }
   };
 
-  // =========================
-  // RENDER
-  // =========================
   function renderCategories(cats) {
     const box = $("cats");
     if (!box) return;
@@ -381,6 +374,7 @@ window.ChizhikAPI = window.ChizhikAPI || {};
 
     (cats || []).slice(0, 24).forEach((cat) => {
       const img = pickCatImage(cat);
+      const catSlug = cat.slug || slugify(cat.name);
 
       const tile = document.createElement("div");
       tile.className = "cat";
@@ -413,7 +407,7 @@ window.ChizhikAPI = window.ChizhikAPI || {};
       `;
 
       tile.onclick = () => {
-        location.href = `category.html?city=${state.city.id}&cat=${cat.id}`;
+        location.href = `/${state.citySlug}/${catSlug}/?cat_id=${cat.id}`;
       };
       
       box.appendChild(tile);
@@ -473,14 +467,11 @@ window.ChizhikAPI = window.ChizhikAPI || {};
           <div style="font-weight:900;font-size:13px;line-height:1.25;min-height:34px;">
             ${escapeHtml(p.title)}
           </div>
-          <div style="margin-top:6px;font-size:12px;color:#6b7280;">
-            id: ${escapeHtml(p.id)}
-          </div>
         </div>
       `;
 
       card.onclick = () => {
-        location.href = `product.html?city=${state.city.id}&product_id=${p.id}`;
+        location.href = `/${state.citySlug}/product/${p.id}/`;
       };
 
       grid.appendChild(card);
@@ -534,11 +525,9 @@ window.ChizhikAPI = window.ChizhikAPI || {};
     `;
   }
 
-  // =========================
-  // STATE
-  // =========================
   const state = {
     city: null,
+    citySlug: null,
     tree: null,
     mainCats: [],
     promoCatId: null,
@@ -547,10 +536,11 @@ window.ChizhikAPI = window.ChizhikAPI || {};
 
   function selectCity(city) {
     if (!city?.id || !isUUID(city.id)) return;
-    state.city = { id: city.id, name: city.name || "Город" };
+    state.city = { id: city.id, name: city.name || "Город", slug: city.slug || slugify(city.name) };
+    state.citySlug = state.city.slug;
     storage.setCity(state.city);
     
-    location.href = `index.html?city=${city.id}`;
+    location.href = `/${state.citySlug}/`;
   }
 
   function findPromoCategoryId(tree) {
@@ -621,24 +611,54 @@ window.ChizhikAPI = window.ChizhikAPI || {};
     );
   }
 
-  // =========================
-  // INIT
-  // =========================
   async function init() {
     $("year") && ($("year").textContent = String(new Date().getFullYear()));
 
-    const params = new URL(location.href).searchParams;
-    const cityFromUrl = params.get("city");
+    const path = window.location.pathname;
+    const pathParts = path.split('/').filter(Boolean);
 
     const saved = storage.getCity();
-    if (cityFromUrl && isUUID(cityFromUrl)) {
-      state.city = { id: cityFromUrl, name: saved?.id === cityFromUrl ? saved.name : "Город" };
-      storage.setCity(state.city);
-    } else if (saved) {
-      state.city = saved;
+    
+    if (pathParts.length > 0 && pathParts[0]) {
+      const citySlug = pathParts[0];
+      state.citySlug = citySlug;
+      
+      if (saved && saved.slug === citySlug) {
+        state.city = saved;
+      } else {
+        try {
+          const data = await api(`/geo/cities?search=${encodeURIComponent(citySlug)}&page=1`);
+          const items = data?.items || [];
+          const city = items.find(c => (c.slug || slugify(c.name)) === citySlug) || items[0];
+          
+          if (city) {
+            state.city = {
+              id: city.fias_id,
+              name: city.name,
+              slug: city.slug || slugify(city.name)
+            };
+            storage.setCity(state.city);
+          } else {
+            state.city = DEFAULT_CITY;
+            storage.setCity(DEFAULT_CITY);
+            location.href = `/${DEFAULT_CITY.slug}/`;
+            return;
+          }
+        } catch (e) {
+          console.error(e);
+          state.city = DEFAULT_CITY;
+          storage.setCity(DEFAULT_CITY);
+        }
+      }
     } else {
-      state.city = DEFAULT_CITY;
-      storage.setCity(DEFAULT_CITY);
+      state.city = saved || DEFAULT_CITY;
+      state.citySlug = state.city.slug;
+      storage.setCity(state.city);
+      
+      if (path === '/' || path === '/index.html') {
+        location.href = `/${state.citySlug}/`;
+        return;
+      }
     }
 
     $("cityName") && ($("cityName").textContent = state.city.name);
