@@ -21,7 +21,7 @@
   const API_PREFIX =
     window.__API_PREFIX__ ||
     document.querySelector('meta[name="api-prefix"]')?.content ||
-    "/api";
+    "/public";  // ИСПРАВЛЕНО: было /api
 
   // Москва (UUID)
   const DEFAULT_CITY = {
@@ -752,7 +752,7 @@
     init().catch((e) => {
       console.error(e);
       setText("catHint", "Ошибка инициализации");
-      setText("prodHint", "Ошибка загрузки. Проверь API_BASE и /api/*");
+      setText("prodHint", "Ошибка загрузки. Проверь API_BASE и /public/*");
     });
   });
 })();
