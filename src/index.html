@@ -5,13 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="api-base" content="https://feefomit-chizhick-deb9.twc1.net">
   <meta name="api-prefix" content="/public">
-  <title>Чижик - Каталог товаров</title>
-  <link rel="stylesheet" href="css/style.css">
+  
+  <title>Чижик - Каталог товаров с доставкой</title>
+  <meta name="description" content="Каталог товаров Чижик - широкий выбор продуктов с доставкой по всей России. Акции, скидки, низкие цены.">
+  <meta name="keywords" content="чижик, каталог товаров, доставка продуктов, интернет-магазин">
+  <link rel="canonical" href="https://chizhick.ru/">
+  
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Чижик - Каталог товаров">
+  <meta property="og:description" content="Каталог товаров с доставкой по России">
+  <meta property="og:url" content="https://chizhick.ru/">
+  <meta property="og:site_name" content="Чижик">
+  
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <header style="background:#fff;border-bottom:1px solid #e5e7eb;padding:14px 20px;">
     <div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px;">
-      <div style="font-size:20px;font-weight:900;">🛒 Чижик</div>
+      <a href="/" style="text-decoration:none;color:inherit;font-size:20px;font-weight:900;">🛒 Чижик</a>
       <button id="cityBtn" style="border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:800;transition:background 0.2s;">
         <span id="cityName">Город</span>
       </button>
@@ -19,17 +30,21 @@
   </header>
 
   <main style="max-width:1200px;margin:20px auto;padding:0 20px;">
-    <!-- Баннер акций -->
+    <noscript>
+      <div style="padding:20px;background:#fff3cd;border:1px solid #ffc107;border-radius:8px;margin-bottom:20px;">
+        <h2>Включите JavaScript</h2>
+        <p>Для полноценной работы сайта необходимо включить JavaScript в браузере.</p>
+      </div>
+    </noscript>
+
     <div id="offersBox" style="margin-bottom:32px;"></div>
 
-    <!-- Категории -->
     <section style="margin-bottom:32px;">
-      <h2 style="font-size:22px;font-weight:900;margin:0 0 12px 0;">Категории</h2>
+      <h1 style="font-size:22px;font-weight:900;margin:0 0 12px 0;">Категории товаров</h1>
       <div id="catHint" style="margin-bottom:12px;color:#6b7280;font-size:14px;">Загрузка...</div>
       <div id="cats" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;"></div>
     </section>
 
-    <!-- Промо товары -->
     <section>
       <h2 style="font-size:22px;font-weight:900;margin:0 0 12px 0;">🔥 Скидки дня</h2>
       <div id="prodHint" style="margin-bottom:12px;color:#6b7280;font-size:14px;">Загрузка...</div>
@@ -41,6 +56,6 @@
     <div>© <span id="year">2026</span> Чижик - Каталог товаров</div>
   </footer>
 
-  <script src="js/app.js"></script>
+  <script src="/js/app.js"></script>
 </body>
 </html>
