@@ -6,7 +6,8 @@
   <meta name="api-base" content="https://feefomit-chizhick-deb9.twc1.net">
   <meta name="api-prefix" content="/public">
   <title>Товар - Чижик</title>
-  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="Описание товара с доставкой">
+  <link rel="stylesheet" href="/css/style.css">
   <style>
     @media (max-width: 768px) {
       .product-grid {
@@ -16,13 +17,12 @@
   </style>
 </head>
 <body>
-  <!-- ШАПКА -->
   <header style="background:#fff;border-bottom:1px solid #e5e7eb;padding:14px 20px;">
     <div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px;">
       <button id="backBtn" style="border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:800;transition:background 0.2s;">
         ← Назад
       </button>
-      <div style="font-size:18px;font-weight:900;">🛒 Чижик</div>
+      <a href="/" style="text-decoration:none;color:inherit;font-size:18px;font-weight:900;">🛒 Чижик</a>
       <button id="cityBtn" style="border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:800;transition:background 0.2s;">
         <span id="cityName">Город</span>
       </button>
@@ -30,26 +30,26 @@
   </header>
 
   <main style="max-width:1200px;margin:20px auto;padding:0 20px;">
-    <!-- Хлебные крошки -->
     <div id="breadcrumbs" style="margin-bottom:24px;font-size:14px;display:flex;align-items:center;flex-wrap:wrap;">
-      <a href="index.html" style="color:#6b7280;text-decoration:none;">Главная</a>
+      <a href="/" style="color:#6b7280;text-decoration:none;">Главная</a>
       <span style="color:#d1d5db;margin:0 8px;">/</span>
       <span style="color:#111827;">Загрузка...</span>
     </div>
 
     <div class="product-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:32px;">
-      <!-- Галерея -->
       <div id="gallery" style="display:grid;gap:12px;"></div>
 
-      <!-- Информация о товаре -->
       <div>
         <h1 id="productTitle" style="font-size:28px;font-weight:900;margin:0 0 20px 0;line-height:1.2;">Загрузка...</h1>
         
         <div id="priceBox" style="margin-bottom:32px;"></div>
         
-        <div id="productDesc" style="color:#374151;line-height:1.6;margin-bottom:32px;font-size:15px;"></div>
+        <div id="descSection" style="display:none;margin-bottom:32px;">
+          <h3 style="margin:0 0 12px 0;font-weight:900;font-size:18px;">Описание</h3>
+          <div id="productDesc" style="color:#374151;line-height:1.6;font-size:15px;"></div>
+        </div>
         
-        <div style="background:#f9fafb;border-radius:16px;padding:20px;border:1px solid #e5e7eb;">
+        <div id="specsSection" style="display:none;background:#f9fafb;border-radius:16px;padding:20px;border:1px solid #e5e7eb;">
           <h3 style="margin:0 0 16px 0;font-weight:900;font-size:18px;">Характеристики</h3>
           <div id="specs"></div>
         </div>
@@ -61,7 +61,7 @@
     <div>© 2026 Чижик - Каталог товаров</div>
   </footer>
 
-  <script src="js/app.js"></script>
-  <script src="js/product.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/product.js"></script>
 </body>
 </html>
