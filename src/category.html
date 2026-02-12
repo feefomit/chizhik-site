@@ -11,26 +11,41 @@
 <body>
   <header style="background:#fff;border-bottom:1px solid #e5e7eb;padding:14px 20px;">
     <div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px;">
-      <button id="backBtn" style="border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:800;">
+      <button id="backBtn" style="border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:800;transition:background 0.2s;">
         ← Назад
       </button>
       <h1 id="catName" style="font-size:18px;font-weight:900;margin:0;flex:1;text-align:center;">Категория</h1>
-      <button id="cityBtn" style="border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:800;">
+      <button id="cityBtn" style="border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:800;transition:background 0.2s;">
         <span id="cityName">Город</span>
       </button>
     </div>
   </header>
 
   <main style="max-width:1200px;margin:20px auto;padding:0 20px;">
-    <div id="prodHint" style="margin-bottom:16px;color:#6b7280;font-size:14px;">Загрузка...</div>
-    
-    <div id="products" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;"></div>
+    <!-- Подкатегории -->
+    <section id="subcats" style="margin-bottom:32px;display:none;">
+      <h2 style="font-size:18px;font-weight:900;margin:0 0 12px 0;">Подкатегории</h2>
+      <div id="subcatsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;"></div>
+    </section>
 
-    <div style="text-align:center;margin-top:32px;">
-      <button id="moreBtn" hidden style="border:1px solid #111827;background:#111827;color:#fff;border-radius:999px;padding:12px 32px;cursor:pointer;font-weight:900;font-size:16px;">
-        Показать ещё
-      </button>
-    </div>
+    <!-- Товары категории -->
+    <section style="margin-bottom:48px;">
+      <h2 style="font-size:18px;font-weight:900;margin:0 0 12px 0;">Товары</h2>
+      <div id="prodHint" style="margin-bottom:12px;color:#6b7280;font-size:14px;">Загрузка...</div>
+      <div id="products" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;"></div>
+
+      <div style="text-align:center;margin-top:32px;">
+        <button id="moreBtn" hidden style="border:1px solid #111827;background:#111827;color:#fff;border-radius:999px;padding:12px 32px;cursor:pointer;font-weight:900;font-size:16px;transition:all 0.2s;">
+          Показать ещё
+        </button>
+      </div>
+    </section>
+
+    <!-- Акционные товары -->
+    <section id="promoSection" style="display:none;margin-bottom:32px;">
+      <h2 style="font-size:22px;font-weight:900;margin:0 0 12px 0;">🔥 Акции и скидки</h2>
+      <div id="promoProducts" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;"></div>
+    </section>
   </main>
 
   <footer style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:24px 20px;margin-top:48px;text-align:center;color:#6b7280;font-size:14px;">
