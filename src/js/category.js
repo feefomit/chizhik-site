@@ -1,16 +1,15 @@
-/*  chizhick.ru — category.js - СТРАНИЦА КАТЕГОРИИ */
+/*  chizhick.ru — category.js */
 
 (() => {
-  // Проверка доступности API
   if (!window.ChizhikAPI || !window.ChizhikAPI.api) {
     console.error("ChizhikAPI не загружен!");
     document.body.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px;padding:20px;text-align:center;">
         <div style="font-size:48px;">⚠️</div>
         <div style="font-weight:900;font-size:24px;">Ошибка загрузки</div>
-        <div style="color:#6b7280;">API не инициализирован. Проверьте подключение app.js</div>
+        <div style="color:#6b7280;">API не инициализирован</div>
         <button onclick="location.reload()" style="border:1px solid #111;background:#111;color:#fff;padding:12px 24px;border-radius:999px;cursor:pointer;font-weight:800;">
-          Перезагрузить страницу
+          Перезагрузить
         </button>
       </div>
     `;
@@ -20,12 +19,16 @@
   const $ = (id) => document.getElementById(id);
   const API = window.ChizhikAPI;
 
+  const path = window.location.pathname;
+  const pathParts = path.split('/').filter(Boolean);
   const params = new URL(location.href).searchParams;
-  const cityId = params.get("city");
-  const catId = params.get("cat");
+  
+  const citySlug = pathParts[0] || '';
+  const categorySlug = pathParts[1] || '';
+  const catId = params.get('cat_id');
 
-  if (!cityId || !catId) {
-    location.href = "index.html";
+  if (!citySlug || !categorySlug || !catId) {
+    location.href = '/';
     return;
   }
 
@@ -34,16 +37,19 @@
   const productImage = API.productImage;
   const discountPct = API.discountPct;
   const pickCatImage = API.pickCatImage;
+  const slugify = API.slugify;
 
   const state = {
-    city: API.storage.getCity() || { id: cityId, name: "Город" },
+    city: API.storage.getCity() || { slug: citySlug, name: "Город" },
+    citySlug: citySlug,
+    categorySlug: categorySlug,
+    catId: catId,
     category: null,
     subcategories: [],
     page: 1,
     hasMore: false,
   };
 
-  // Рендер подкатегорий
   function renderSubcategories(subcats) {
     const box = $("subcats");
     if (!box) return;
@@ -61,6 +67,7 @@
 
     subcats.forEach((cat) => {
       const img = pickCatImage(cat);
+      const catSlug = cat.slug || slugify(cat.name);
 
       const tile = document.createElement("div");
       tile.style.cssText = `
@@ -89,14 +96,13 @@
       `;
 
       tile.onclick = () => {
-        location.href = `category.html?city=${cityId}&cat=${cat.id}`;
+        location.href = `/${citySlug}/${catSlug}/?cat_id=${cat.id}`;
       };
       
       grid.appendChild(tile);
     });
   }
 
-  // Рендер товаров категории
   function renderProducts(items, append = false) {
     const grid = $("products");
     if (!grid) return;
@@ -142,7 +148,7 @@
       `;
 
       card.onclick = () => {
-        location.href = `product.html?city=${cityId}&product_id=${p.id}`;
+        location.href = `/${citySlug}/product/${p.id}/`;
       };
 
       grid.appendChild(card);
@@ -153,7 +159,6 @@
     }
   }
 
-  // Рендер акционных товаров
   function renderPromoProducts(items) {
     const grid = $("promoProducts");
     if (!grid) return;
@@ -206,17 +211,16 @@
       `;
 
       card.onclick = () => {
-        location.href = `product.html?city=${cityId}&product_id=${p.id}`;
+        location.href = `/${citySlug}/product/${p.id}/`;
       };
 
       grid.appendChild(card);
     });
   }
 
-  // Загрузка промо товаров
   async function loadPromoProducts() {
     try {
-      const tree = API.storage.getCached(`tree:${cityId}`, 12 * 60 * 60 * 1000);
+      const tree = API.storage.getCached(`tree:${state.city.id}`, 12 * 60 * 60 * 1000);
       if (!tree) return;
 
       const all = API.flattenTree(tree);
@@ -232,7 +236,7 @@
 
       if (!promoCatId) return;
 
-      const data = await API.api(`/catalog/products?city_id=${encodeURIComponent(cityId)}&category_id=${promoCatId}&page=1`);
+      const data = await API.api(`/catalog/products?city_id=${encodeURIComponent(state.city.id)}&category_id=${promoCatId}&page=1`);
       const items = data.items || [];
       
       const discounted = API.filterDiscounts(items);
@@ -243,7 +247,7 @@
   }
 
   async function loadCategory() {
-    const tree = API.storage.getCached(`tree:${cityId}`, 12 * 60 * 60 * 1000);
+    const tree = API.storage.getCached(`tree:${state.city.id}`, 12 * 60 * 60 * 1000);
     if (tree) {
       const all = API.flattenTree(tree);
       state.category = all.find((c) => String(c.id) === String(catId));
@@ -253,14 +257,25 @@
       }
     }
 
-    const catName = state.category?.name || `Категория #${catId}`;
+    const catName = state.category?.name || `Категория`;
     
     $("catName") && ($("catName").textContent = catName);
     $("cityName") && ($("cityName").textContent = state.city.name);
+    
+    document.title = `${catName} - ${state.city.name} - Чижик`;
+
+    const breadcrumbs = $("breadcrumbs");
+    if (breadcrumbs) {
+      breadcrumbs.innerHTML = `
+        <a href="/${citySlug}/" style="color:#6b7280;text-decoration:none;transition:color 0.2s;" onmouseenter="this.style.color='#111827'" onmouseleave="this.style.color='#6b7280'">Главная</a>
+        <span style="color:#d1d5db;margin:0 8px;">/</span>
+        <span style="color:#111827;font-weight:700;">${escapeHtml(catName)}</span>
+      `;
+    }
 
     renderSubcategories(state.subcategories);
 
-    const data = await API.api(`/catalog/products?city_id=${encodeURIComponent(cityId)}&category_id=${catId}&page=${state.page}`);
+    const data = await API.api(`/catalog/products?city_id=${encodeURIComponent(state.city.id)}&category_id=${catId}&page=${state.page}`);
 
     const items = data.items || [];
     renderProducts(items, state.page > 1);
@@ -278,7 +293,7 @@
     $("cityBtn")?.addEventListener("click", () => window.ChizhikCity.openCityModal(""));
 
     $("backBtn")?.addEventListener("click", () => {
-      location.href = `index.html?city=${cityId}`;
+      location.href = `/${citySlug}/`;
     });
 
     $("moreBtn")?.addEventListener("click", async () => {
