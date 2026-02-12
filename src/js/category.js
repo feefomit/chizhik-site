@@ -1,13 +1,24 @@
-
 /*  chizhick.ru — category.js - СТРАНИЦА КАТЕГОРИИ */
 
 (() => {
-  const $ = (id) => document.getElementById(id);
-  const API = window.ChizhikAPI;
-  if (!API) {
-    alert("Ошибка: не загружен ChizhikAPI");
+  // Проверка доступности API
+  if (!window.ChizhikAPI || !window.ChizhikAPI.api) {
+    console.error("ChizhikAPI не загружен!");
+    document.body.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px;padding:20px;text-align:center;">
+        <div style="font-size:48px;">⚠️</div>
+        <div style="font-weight:900;font-size:24px;">Ошибка загрузки</div>
+        <div style="color:#6b7280;">API не инициализирован. Проверьте подключение app.js</div>
+        <button onclick="location.reload()" style="border:1px solid #111;background:#111;color:#fff;padding:12px 24px;border-radius:999px;cursor:pointer;font-weight:800;">
+          Перезагрузить страницу
+        </button>
+      </div>
+    `;
     return;
   }
+
+  const $ = (id) => document.getElementById(id);
+  const API = window.ChizhikAPI;
 
   const params = new URL(location.href).searchParams;
   const cityId = params.get("city");
@@ -18,35 +29,11 @@
     return;
   }
 
-  const escapeHtml = (s) =>
-    String(s ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-
-  function rub(x) {
-    if (x == null) return "—";
-    const n = Number(x);
-    if (!Number.isFinite(n)) return "—";
-    return `${Math.round(n)} ₽`;
-  }
-
-  function productImage(p) {
-    return p?.images?.length ? (p.images[0]?.image || null) : null;
-  }
-
-  function discountPct(price, oldPrice) {
-    if (price == null || oldPrice == null) return null;
-    const p = Number(price), o = Number(oldPrice);
-    if (!Number.isFinite(p) || !Number.isFinite(o) || o <= p) return null;
-    return Math.round((1 - p / o) * 100);
-  }
-
-  function pickCatImage(cat) {
-    return cat.image || cat.icon || null;
-  }
+  const escapeHtml = API.escapeHtml;
+  const rub = API.rub;
+  const productImage = API.productImage;
+  const discountPct = API.discountPct;
+  const pickCatImage = API.pickCatImage;
 
   const state = {
     city: API.storage.getCity() || { id: cityId, name: "Город" },
@@ -54,7 +41,6 @@
     subcategories: [],
     page: 1,
     hasMore: false,
-    promoCatId: null,
   };
 
   // Рендер подкатегорий
@@ -249,8 +235,7 @@
       const data = await API.api(`/catalog/products?city_id=${encodeURIComponent(cityId)}&category_id=${promoCatId}&page=1`);
       const items = data.items || [];
       
-      // Показываем только товары со скидками
-      const discounted = items.filter((p) => p.old_price != null && Number(p.old_price) > Number(p.price));
+      const discounted = API.filterDiscounts(items);
       renderPromoProducts(discounted.length ? discounted : items);
     } catch (e) {
       console.error("Ошибка загрузки промо:", e);
@@ -263,19 +248,18 @@
       const all = API.flattenTree(tree);
       state.category = all.find((c) => String(c.id) === String(catId));
       
-      // Найти подкатегории
       if (state.category?.children && state.category.children.length) {
         state.subcategories = state.category.children;
       }
     }
 
-    $("catName") && ($("catName").textContent = state.category?.name || `Категория #${catId}`);
+    const catName = state.category?.name || `Категория #${catId}`;
+    
+    $("catName") && ($("catName").textContent = catName);
     $("cityName") && ($("cityName").textContent = state.city.name);
 
-    // Рендерим подкатегории
     renderSubcategories(state.subcategories);
 
-    // Загружаем товары категории
     const data = await API.api(`/catalog/products?city_id=${encodeURIComponent(cityId)}&category_id=${catId}&page=${state.page}`);
 
     const items = data.items || [];
@@ -287,7 +271,6 @@
 
     $("prodHint") && ($("prodHint").textContent = items.length ? `Товаров: ${items.length}` : "");
 
-    // Загружаем промо товары
     await loadPromoProducts();
   }
 
