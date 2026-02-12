@@ -1,4 +1,9 @@
-/*  chizhick.ru — app.js (vanilla) - ГЛАВНАЯ СТРАНИЦА */
+/*  chizhick.ru — app.js (vanilla) - ГЛАВНАЯ СТРАНИЦА + API */
+
+// =============================
+// ЭКСПОРТ API (сразу, до всего)
+// =============================
+window.ChizhikAPI = window.ChizhikAPI || {};
 
 (() => {
   // =========================
@@ -183,8 +188,25 @@
     throw lastErr || new Error("API error");
   }
 
-  // Экспорт для других страниц
-  window.ChizhikAPI = { api, storage, isUUID, cleanBase, API_BASE, API_PREFIX, flattenTree, extractMainCats };
+  // ========================================
+  // ЭКСПОРТ API для других страниц (СРАЗУ!)
+  // ========================================
+  Object.assign(window.ChizhikAPI, {
+    api,
+    storage,
+    isUUID,
+    cleanBase,
+    flattenTree,
+    extractMainCats,
+    escapeHtml,
+    rub,
+    productImage,
+    discountPct,
+    pickCatImage,
+    filterDiscounts,
+    API_BASE,
+    API_PREFIX,
+  });
 
   // =========================
   // UI: City modal
